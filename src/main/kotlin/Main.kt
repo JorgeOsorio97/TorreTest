@@ -3,13 +3,14 @@ import load.DbConnection
 import models.City
 import models.Country
 import models.Location
+import models.Person
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
 fun main() {
     DbConnection.getConnection()
-    DbConnection.executeQuery("SHOW DATABASES;")
+    // DbConnection.executeQuery("SHOW DATABASES;", mutableListOf())
     var result: JSONObject;
     var people: JSONArray
     var next: String? = null
@@ -24,27 +25,68 @@ fun main() {
             }
             count++
             if (count % 10 ==0) println(count)
-            break
         } catch (ex: JSONException){
             ex.printStackTrace()
             println(result.keySet())
-            break
+            next = null
         }
     } while(next!=null)
 }
 
 fun processPerson(person: JSONObject): Unit{
-    println(person.getString("locationName"))
-    val location_list = person.getString("locationName").split(", ")
-    val city = City(null, location_list[0])
-    DbConnection.insert_or_ignore(city)
-    city.id = DbConnection.getObjId(city, "id")
-    val country = Country(null, location_list[1])
-    DbConnection.insert_or_ignore(country)
-    country.id = DbConnection.getObjId(country, "id")
-    val location = Location(null, name=person.getString("locationName"), city_id = city.id!!, country_id = country.id!!)
-    DbConnection.insert_or_ignore(location)
-    location.id = DbConnection.getObjId(location, "id")
+    // Location
+    // city
+    var stage = "location"
+    try{
+        val location_list = person.getString("locationName").split(", ")
+        var location: Location
+        if(location_list.size>1) {
+            stage = "city-size>1"
+            val city = City(null, location_list[0])
+            DbConnection.insert_or_ignore(city)
+            city.id = DbConnection.getObjId(city, "id")
+            // country
+            stage = "country-size>1"
+            val country = Country(null, location_list[1])
+            DbConnection.insert_or_ignore(country)
+            country.id = DbConnection.getObjId(country, "id")
+            // location
+            stage = "location-size>1"
+            location =
+                Location(null, name = person.getString("locationName"), city_id = city.id!!, country_id = country.id!!)
+            DbConnection.insert_or_ignore(location)
+            location.id = DbConnection.getObjId(location, "id")
+        } else {
+            // country
+            stage = "countru-size0"
+            val country = Country(null, location_list[0])
+            DbConnection.insert_or_ignore(country)
+            country.id = DbConnection.getObjId(country, "id")
+            // location
+            stage = "location-size0"
+            location =
+                Location(null, name = person.getString("locationName"), city_id = null, country_id = country.id!!)
+            DbConnection.insert_or_ignore(location)
+            location.id = DbConnection.getObjId(location, "id")
+        }
 
+        //openTo TODO: future work
+        // val openTo = person.getJSONArray("openTo")
+
+        // People
+        stage = "person"
+        Person(
+            subjectId = person.getInt("subjectId"),
+            verified = person.getBoolean("verified"),
+            weight = person.getDouble("weight").toFloat(),
+            location = location.id,
+            openTo = null
+        )
+    } catch (ex: Exception){
+        ex.printStackTrace()
+        println(person)
+        println(stage)
+        throw ex
+    }
 }
 
