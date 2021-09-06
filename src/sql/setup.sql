@@ -6,21 +6,21 @@ USE torre_test;
 -- Dimension country table
 CREATE TABLE IF NOT EXISTS country
 (
-    id   SMALLINT UNSIGNED PRIMARY KEY,
-    name VARCHAR(60)
+    id   SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    country VARCHAR(60)
 ) ENGINE = INNODB;
 
 -- Dimension city table
 CREATE TABLE IF NOT EXISTS city
 (
-    id   INT UNSIGNED PRIMARY KEY,
-    name TEXT
+    id   INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    city TEXT
 ) ENGINE = INNODB;
 
 -- Dimension location table
 CREATE TABLE IF NOT EXISTS location
 (
-    id         INT UNSIGNED PRIMARY KEY,
+    id         INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     country_id SMALLINT UNSIGNED,
     city_id    INT UNSIGNED,
     FOREIGN KEY (country_id) REFERENCES country (id) ON DELETE CASCADE,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS location
 -- Dimension openTo table
 CREATE TABLE IF NOT EXISTS openTo
 (
-    id          SMALLINT UNSIGNED PRIMARY KEY,
+    id          SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fulltime    BOOLEAN,
     freelance   BOOLEAN,
     internships BOOLEAN,
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS people
 -- Dimension type table
 CREATE TABLE IF NOT EXISTS type
 (
-    id   SMALLINT UNSIGNED PRIMARY KEY,
+    id   SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50)
 ) ENGINE = INNODB;
 
@@ -82,8 +82,8 @@ CREATE TABLE IF NOT EXISTS opps
 -- Dimension skill table
 CREATE TABLE IF NOT EXISTS skill
 (
-    id   INT UNSIGNED PRIMARY KEY,
-    name VARCHAR(50)
+    id    INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    skill VARCHAR(50)
 ) ENGINE = INNODB;
 
 -- Dimension bridge opp_skill table
@@ -91,8 +91,19 @@ CREATE TABLE IF NOT EXISTS opp_skill
 (
     opp_id   INT UNSIGNED,
     skill_id INT UNSIGNED,
+    experience VARCHAR(15),
     PRIMARY KEY (opp_id, skill_id),
     FOREIGN KEY (opp_id) REFERENCES opps (id) ON DELETE CASCADE,
+    FOREIGN KEY (skill_id) REFERENCES opps (id) ON DELETE CASCADE
+) ENGINE = INNODB;
+
+-- Dimension bridge people_skill table
+CREATE TABLE IF NOT EXISTS people_skill
+(
+    people_id   INT UNSIGNED,
+    skill_id INT UNSIGNED,
+    PRIMARY KEY (people_id, skill_id),
+    FOREIGN KEY (people_id) REFERENCES opps (id) ON DELETE CASCADE,
     FOREIGN KEY (skill_id) REFERENCES opps (id) ON DELETE CASCADE
 ) ENGINE = INNODB;
 
@@ -104,21 +115,21 @@ USE torre_stage;
 -- Dimension country table
 CREATE TABLE IF NOT EXISTS country
 (
-    id   SMALLINT UNSIGNED PRIMARY KEY,
-    name VARCHAR(60)
+    id   SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    country VARCHAR(60)
 ) ENGINE = INNODB;
 
 -- Dimension city table
 CREATE TABLE IF NOT EXISTS city
 (
-    id   INT UNSIGNED PRIMARY KEY,
-    name TEXT
+    id   INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    city TEXT
 ) ENGINE = INNODB;
 
 -- Dimension location table
 CREATE TABLE IF NOT EXISTS location
 (
-    id         INT UNSIGNED PRIMARY KEY,
+    id         INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     country_id SMALLINT UNSIGNED,
     city_id    INT UNSIGNED,
     FOREIGN KEY (country_id) REFERENCES country (id) ON DELETE CASCADE,
@@ -128,7 +139,7 @@ CREATE TABLE IF NOT EXISTS location
 -- Dimension openTo table
 CREATE TABLE IF NOT EXISTS openTo
 (
-    id          SMALLINT UNSIGNED PRIMARY KEY,
+    id          SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     fulltime    BOOLEAN,
     freelance   BOOLEAN,
     internships BOOLEAN,
@@ -152,14 +163,14 @@ CREATE TABLE IF NOT EXISTS people
 -- Dimension type table
 CREATE TABLE IF NOT EXISTS type
 (
-    id   SMALLINT UNSIGNED PRIMARY KEY,
+    id   SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50)
 ) ENGINE = INNODB;
 
 -- Dimension status table
 CREATE TABLE IF NOT EXISTS status
 (
-    id     SMALLINT UNSIGNED PRIMARY KEY,
+    id     SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     status VARCHAR(20)
 ) ENGINE = INNODB;
 
@@ -180,8 +191,8 @@ CREATE TABLE IF NOT EXISTS opps
 -- Dimension skill table
 CREATE TABLE IF NOT EXISTS skill
 (
-    id   INT UNSIGNED PRIMARY KEY,
-    name VARCHAR(50)
+    id    INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    skill VARCHAR(50)
 ) ENGINE = INNODB;
 
 -- Dimension bridge opp_skill table
@@ -193,3 +204,26 @@ CREATE TABLE IF NOT EXISTS opp_skill
     FOREIGN KEY (opp_id) REFERENCES opps (id) ON DELETE CASCADE,
     FOREIGN KEY (skill_id) REFERENCES opps (id) ON DELETE CASCADE
 ) ENGINE = INNODB;
+
+-- Dimension bridge opp_skill table
+CREATE TABLE IF NOT EXISTS opp_skill
+(
+    opp_id   INT UNSIGNED,
+    skill_id INT UNSIGNED,
+    experience VARCHAR(15),
+    PRIMARY KEY (opp_id, skill_id),
+    FOREIGN KEY (opp_id) REFERENCES opps (id) ON DELETE CASCADE,
+    FOREIGN KEY (skill_id) REFERENCES opps (id) ON DELETE CASCADE
+) ENGINE = INNODB;
+
+-- Dimension bridge people_skill table
+CREATE TABLE IF NOT EXISTS people_skill
+(
+    people_id   INT UNSIGNED,
+    skill_id INT UNSIGNED,
+    PRIMARY KEY (people_id, skill_id),
+    FOREIGN KEY (people_id) REFERENCES opps (id) ON DELETE CASCADE,
+    FOREIGN KEY (skill_id) REFERENCES opps (id) ON DELETE CASCADE
+) ENGINE = INNODB;
+
+
