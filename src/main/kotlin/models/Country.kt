@@ -2,6 +2,12 @@ package models
 
 
 data class Country(
-    val id: Int?,
+    var id: Int?,
     val country: String
-)
+): Table{
+    override val table_name="country"
+    override val exist_validation_fields = mutableMapOf(
+        "country" to country
+    )
+
+}
