@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS people_skill
     people_id   INT UNSIGNED,
     skill_id INT UNSIGNED,
     PRIMARY KEY (people_id, skill_id),
-    FOREIGN KEY (people_id) REFERENCES opps (id) ON DELETE CASCADE,
+    FOREIGN KEY (people_id) REFERENCES people (subjectId) ON DELETE CASCADE,
     FOREIGN KEY (skill_id) REFERENCES skill (id) ON DELETE CASCADE
 ) ENGINE = INNODB;
 

@@ -18,4 +18,4 @@ Following a snowflake model in MySQL. (Upgrade: Redshift or other data warehousi
 * Manage database access as .env variables
 
 ### Database schema
-![img.png](img.png)
+![img_1.png](img_1.png)
