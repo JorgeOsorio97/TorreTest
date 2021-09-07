@@ -16,7 +16,7 @@ fun main() {
     var next: String? = null
     var count = 0
     do{
-        result =  TorreAPI.getData("people", next, 1)
+        result =  TorreAPI.getData("people", next, 100)
         try{
             people = result.getJSONArray("results")
             next = result.getJSONObject("pagination").getString("next")
@@ -37,49 +37,54 @@ fun processPerson(person: JSONObject): Unit{
     // Location
     // city
     var stage = "location"
+    var location: Location? = null
     try{
-        val location_list = person.getString("locationName").split(", ")
-        var location: Location
-        if(location_list.size>1) {
-            stage = "city-size>1"
-            val city = City(null, location_list[0])
-            DbConnection.insert_or_ignore(city)
-            city.id = DbConnection.getObjId(city, "id")
-            // country
-            stage = "country-size>1"
-            val country = Country(null, location_list[1])
-            DbConnection.insert_or_ignore(country)
-            country.id = DbConnection.getObjId(country, "id")
-            // location
-            stage = "location-size>1"
-            location =
-                Location(null, name = person.getString("locationName"), city_id = city.id!!, country_id = country.id!!)
-            DbConnection.insert_or_ignore(location)
-            location.id = DbConnection.getObjId(location, "id")
-        } else {
-            // country
-            stage = "countru-size0"
-            val country = Country(null, location_list[0])
-            DbConnection.insert_or_ignore(country)
-            country.id = DbConnection.getObjId(country, "id")
-            // location
-            stage = "location-size0"
-            location =
-                Location(null, name = person.getString("locationName"), city_id = null, country_id = country.id!!)
-            DbConnection.insert_or_ignore(location)
-            location.id = DbConnection.getObjId(location, "id")
+        if (!person.isNull("locationName")){
+            val location_list = person.getString("locationName").split(", ")
+
+            if(location_list.size>1) {
+                stage = "city-size>1"
+                val city = City(null, location_list[0])
+                DbConnection.insert_or_ignore(city)
+                city.id = DbConnection.getObjId(city, "id")
+                // country
+                stage = "country-size>1"
+                val country = Country(null, location_list[1])
+                DbConnection.insert_or_ignore(country)
+                country.id = DbConnection.getObjId(country, "id")
+                // location
+                stage = "location-size>1"
+                location =
+                    Location(null, name = person.getString("locationName"), city_id = city.id!!, country_id = country.id!!)
+                DbConnection.insert_or_ignore(location)
+                location.id = DbConnection.getObjId(location, "id")
+            } else {
+                // country
+                stage = "countru-size0"
+                val country = Country(null, location_list[0])
+                DbConnection.insert_or_ignore(country)
+                country.id = DbConnection.getObjId(country, "id")
+                // location
+                stage = "location-size0"
+                location =
+                    Location(null, name = person.getString("locationName"), city_id = null, country_id = country.id!!)
+                DbConnection.insert_or_ignore(location)
+                location.id = DbConnection.getObjId(location, "id")
+            }
         }
+
 
         //openTo TODO: future work
         // val openTo = person.getJSONArray("openTo")
 
         // People
+        val location_id = if (location==null) null else location.id
         stage = "person"
         Person(
             subjectId = person.getInt("subjectId"),
             verified = person.getBoolean("verified"),
             weight = person.getDouble("weight").toFloat(),
-            location = location.id,
+            location = location_id,
             openTo = null
         )
     } catch (ex: Exception){
