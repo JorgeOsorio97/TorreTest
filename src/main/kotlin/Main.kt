@@ -80,13 +80,17 @@ fun processPerson(person: JSONObject): Unit{
         // People
         val location_id = if (location==null) null else location.id
         stage = "person"
-        Person(
+        val person = Person(
             subjectId = person.getInt("subjectId"),
             verified = person.getBoolean("verified"),
             weight = person.getDouble("weight").toFloat(),
             location = location_id,
             openTo = null
         )
+        DbConnection.insert_or_ignore(person)
+//        val skills
+
+
     } catch (ex: Exception){
         ex.printStackTrace()
         println(person)

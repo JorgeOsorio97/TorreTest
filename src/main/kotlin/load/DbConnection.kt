@@ -91,7 +91,7 @@ object DbConnection {
             .map { (key, value) -> if (value=="NULL") "$key = NULL" else "$key = ?"}
             .joinToString(" AND ")
 
-        var query = "INSERT INTO torre_test.${obj.table_name}"
+        var query = "INSERT IGNORE INTO torre_test.${obj.table_name}"
         query = "$query ( $keys ) SELECT $values FROM dual WHERE NOT EXISTS "
         query = "$query ( SELECT $keys FROM torre_test.${obj.table_name} WHERE $key_vals );"
         var params: MutableList<String> = mutableListOf()

@@ -18,6 +18,11 @@ object TorreAPI {
             payload["after"] = after
         }
         var response = post(url, params=payload)
-        return response.jsonObject
+        try{
+            return response.jsonObject
+        } catch (ex: Exception){
+            println(response.text)
+        }
+        return JSONObject()
     }
 }
