@@ -16,3 +16,6 @@ Following a snowflake model in MySQL. (Upgrade: Redshift or other data warehousi
 * Dashboard for data visualization made in BI software such as data studio
 * Use and OLAP database such as Redshift.
 * Manage database access as .env variables
+
+### Database schema
+![img.png](img.png)
